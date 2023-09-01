@@ -1,2 +1,37 @@
-# Web-Scraper-News-Article-Extractor
-This is a Python web scraper that extracts news articles from a website and stores the information in a structured format, such as a CSV file.
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+# URL of the website with news articles
+url = 'https://news.example.com'
+
+# Send an HTTP GET request to the URL
+response = requests.get(url)
+
+# Parse the HTML content using BeautifulSoup
+soup = BeautifulSoup(response.content, 'html.parser')
+
+# Find all news article elements using CSS selectors
+articles = soup.find_all('div', class_='article')
+
+# Create a CSV file to store the extracted data
+csv_filename = 'news_articles.csv'
+
+# Open the CSV file in write mode
+with open(csv_filename, 'w', newline='', encoding='utf-8') as csv_file:
+    csv_writer = csv.writer(csv_file)
+    # Write the header row
+    csv_writer.writerow(['Title', 'Author', 'Date', 'Content'])
+
+   # Loop through each article and extract relevant information
+   for article in articles:
+        title = article.find('h2').get_text()
+        author = article.find('span', class_='author').get_text()
+        date = article.find('span', class_='date').get_text()
+        content = article.find('div', class_='content').get_text()
+
+   # Write the data to the CSV file
+  csv_writer.writerow([title, author, date, content])
+
+print(f"Data scraped and saved to '{csv_filename}'.")
+
